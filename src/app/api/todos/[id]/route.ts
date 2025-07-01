@@ -1,8 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
 import Todo from "@/models/todo.models";
 import dbConnect from "@/lib/dbConnect";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher"; // Correct type import
 
+// ✅ Define your own Params type instead of importing from internal Next.js files
+type Params = {
+  id: string;
+};
+
+// DELETE /api/todos/[id]
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Params }
@@ -23,6 +28,7 @@ export async function DELETE(
   }
 }
 
+// PUT /api/todos/[id]
 export async function PUT(
   req: NextRequest,
   { params }: { params: Params }
@@ -33,7 +39,7 @@ export async function PUT(
     const { title } = body;
 
     if (!title) {
-      return NextResponse.json({ error: "Text is required" }, { status: 400 });
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
 
     const updatedTodo = await Todo.findByIdAndUpdate(
