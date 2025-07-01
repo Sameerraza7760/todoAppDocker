@@ -1,31 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import Todo from "@/models/todo.models";
 import dbConnect from "@/lib/dbConnect";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher"; // Correct type import
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Params }
+) {
   try {
     await dbConnect();
 
     const deletedTodo = await Todo.findByIdAndDelete(params.id);
+
     if (!deletedTodo) {
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
     }
 
     return NextResponse.json({ message: "Todo deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Params }
+) {
   try {
     await dbConnect();
     const body = await req.json();
     const { title } = body;
 
     if (!title) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+      return NextResponse.json({ error: "Text is required" }, { status: 400 });
     }
 
     const updatedTodo = await Todo.findByIdAndUpdate(
@@ -41,6 +49,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json(updatedTodo);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+    return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
 }
