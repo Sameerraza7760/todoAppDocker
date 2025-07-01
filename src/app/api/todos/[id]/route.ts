@@ -5,12 +5,12 @@ import dbConnect from "@/lib/dbConnect";
 // DELETE /api/todos/[id]
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     await dbConnect();
 
-    const deletedTodo = await Todo.findByIdAndDelete(context.params.id);
+    const deletedTodo = await Todo.findByIdAndDelete(params.id);
 
     if (!deletedTodo) {
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
@@ -26,7 +26,7 @@ export async function DELETE(
 // PUT /api/todos/[id]
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     await dbConnect();
@@ -39,7 +39,7 @@ export async function PUT(
     }
 
     const updatedTodo = await Todo.findByIdAndUpdate(
-      context.params.id,
+      params.id,
       { title },
       { new: true }
     );
