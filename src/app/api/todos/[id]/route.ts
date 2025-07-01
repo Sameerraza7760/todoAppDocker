@@ -1,21 +1,16 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Todo from "@/models/todo.models";
 import dbConnect from "@/lib/dbConnect";
-
-// ✅ Define your own Params type instead of importing from internal Next.js files
-type Params = {
-  id: string;
-};
 
 // DELETE /api/todos/[id]
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Params }
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect();
 
-    const deletedTodo = await Todo.findByIdAndDelete(params.id);
+    const deletedTodo = await Todo.findByIdAndDelete(context.params.id);
 
     if (!deletedTodo) {
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
@@ -23,18 +18,19 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Todo deleted successfully" });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    console.error("DELETE error:", error);
+    return NextResponse.json({ error: "Failed to delete todo" }, { status: 500 });
   }
 }
 
 // PUT /api/todos/[id]
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Params }
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect();
+
     const body = await req.json();
     const { title } = body;
 
@@ -43,7 +39,7 @@ export async function PUT(
     }
 
     const updatedTodo = await Todo.findByIdAndUpdate(
-      params.id,
+      context.params.id,
       { title },
       { new: true }
     );
@@ -54,7 +50,7 @@ export async function PUT(
 
     return NextResponse.json(updatedTodo);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
+    console.error("PUT error:", error);
+    return NextResponse.json({ error: "Failed to update todo" }, { status: 500 });
   }
 }
