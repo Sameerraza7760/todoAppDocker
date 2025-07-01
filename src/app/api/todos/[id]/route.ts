@@ -14,6 +14,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
         return NextResponse.json({ message: "Todo deleted successfully" });
     } catch (error) {
+        console.log(error)
         return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
     }
 }
