@@ -34,14 +34,16 @@ export function useTodos() {
 
   const deleteTodo = async (id: string) => {
     try {
+      console.log(id)
       // await axios.delete(`/api/todos/${id}`);
-      setTodos(todos.filter((t) => t._id !== id));
+      // setTodos(todos.filter((t) => t._id !== id));
     } catch (error) {
       console.log(error)
     }
   };
   const editTodo = async (id: string, newTitle: string) => {
     try {
+      console.log(id,newTitle)
       // const res = await axios.put<Todo>(`/api/todos/${id}`, { title: newTitle });
       // console.log(res)
       // setTodos((prev) =>
