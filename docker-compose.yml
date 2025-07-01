@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: my-todo-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - mongo-network
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - WATCHPACK_POLLING=true 
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+        consistency: cached
+      - /app/node_modules
+
+    env_file:
+      - .env
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: sameer
+      MONGO_INITDB_ROOT_PASSWORD: sameer123
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mongo-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: sameer
+      ME_CONFIG_MONGODB_ADMINPASSWORD: sameer123
+      ME_CONFIG_MONGODB_URL: mongodb://sameer:sameer123@mongodb:27017/
+
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: pass
+    depends_on:
+      - mongodb
+    networks:
+      - mongo-network
+
+networks:
+  mongo-network:
+    driver: bridge
+volumes:
+  mongo-data:
