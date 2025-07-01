@@ -10,8 +10,10 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
+
 # Copy the rest of the application code
 COPY . .
+RUN npm run build
 
 # Expose port 3000 (Next.js default)
 EXPOSE 3000
