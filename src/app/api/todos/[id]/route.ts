@@ -1,22 +1,24 @@
 import dbConnect from "@/lib/dbConnect";
 import Todo from "@/models/todo.models";
-// Import NextRequest as well as NextResponse
 import { NextRequest, NextResponse } from "next/server";
 
-// 1. Define a type for the context parameter to make the code cleaner
+// This type definition is still good and correct
 type RouteContext = {
     params: {
         id: string;
     };
 };
 
-// 2. Use the new RouteContext type for the 'DELETE' function's second argument
-//    Also, it's good practice to use NextRequest instead of the standard Request.
-export async function DELETE(req: NextRequest, { params }: RouteContext) {
+// CHANGE 1: The function signature now accepts a 'context' object
+export async function DELETE(req: NextRequest, context: RouteContext) {
+    // CHANGE 2: Destructure 'id' from context.params *inside* the function
+    const { id } = context.params;
+
     try {
         await dbConnect();
 
-        const deletedTodo = await Todo.findByIdAndDelete(params.id);
+        // CHANGE 3: Use the 'id' variable directly
+        const deletedTodo = await Todo.findByIdAndDelete(id);
 
         if (!deletedTodo) {
             return NextResponse.json({ error: "Todo not found" }, { status: 404 });
@@ -29,8 +31,11 @@ export async function DELETE(req: NextRequest, { params }: RouteContext) {
     }
 }
 
-// 3. Apply the same fix to the 'PUT' function
-export async function PUT(req: NextRequest, { params }: RouteContext) {
+// Apply the same changes to the PUT function
+export async function PUT(req: NextRequest, context: RouteContext) {
+    // Destructure 'id' from context.params inside the function
+    const { id } = context.params;
+
     try {
         await dbConnect();
 
@@ -41,10 +46,11 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
             return NextResponse.json({ error: "Text is required" }, { status: 400 });
         }
 
+        // Use the 'id' variable directly
         const updatedTodo = await Todo.findByIdAndUpdate(
-            params.id,
+            id,
             { title },
-            { new: true } // This ensures the updated document is returned
+            { new: true }
         );
 
         if (!updatedTodo) {
