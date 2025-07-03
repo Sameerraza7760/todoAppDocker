@@ -2,7 +2,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import Todo from "@/models/todo.models";
 import dbConnect from "@/lib/dbConnect";
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
         await dbConnect();
 
@@ -19,7 +19,10 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
     try {
         await dbConnect();
 
