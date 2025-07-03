@@ -1,12 +1,13 @@
+// src/app/api/todos/[id]/route.ts
+
 import dbConnect from "@/lib/dbConnect";
 import Todo from "@/models/todo.models";
 import { NextRequest, NextResponse } from "next/server";
 
-// Using 'any' to bypass the broken type checker in Next.js 15.3.4
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(req: NextRequest, { params }: any) {
     try {
         await dbConnect();
-        // We know 'params.id' will be a string, so this is safe in practice
         const deletedTodo = await Todo.findByIdAndDelete(params.id);
 
         if (!deletedTodo) {
@@ -20,7 +21,8 @@ export async function DELETE(req: NextRequest, { params }: any) {
     }
 }
 
-// Using 'any' for the PUT function as well
+// We add the same special comment here for the PUT function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PUT(req: NextRequest, { params }: any) {
     try {
         await dbConnect();
