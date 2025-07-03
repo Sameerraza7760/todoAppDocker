@@ -1,8 +1,18 @@
-
 import dbConnect from "@/lib/dbConnect";
 import Todo from "@/models/todo.models";
-import { NextResponse } from "next/server";
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+// Import NextRequest as well as NextResponse
+import { NextRequest, NextResponse } from "next/server";
+
+// 1. Define a type for the context parameter to make the code cleaner
+type RouteContext = {
+    params: {
+        id: string;
+    };
+};
+
+// 2. Use the new RouteContext type for the 'DELETE' function's second argument
+//    Also, it's good practice to use NextRequest instead of the standard Request.
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
     try {
         await dbConnect();
 
@@ -14,15 +24,13 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
         return NextResponse.json({ message: "Todo deleted successfully" });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
     }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// 3. Apply the same fix to the 'PUT' function
+export async function PUT(req: NextRequest, { params }: RouteContext) {
     try {
         await dbConnect();
 
@@ -36,7 +44,7 @@ export async function PUT(
         const updatedTodo = await Todo.findByIdAndUpdate(
             params.id,
             { title },
-            { new: true }
+            { new: true } // This ensures the updated document is returned
         );
 
         if (!updatedTodo) {
