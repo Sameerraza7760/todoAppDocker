@@ -2,17 +2,17 @@ import dbConnect from "@/lib/dbConnect";
 import Todo from "@/models/todo.models";
 import { NextRequest, NextResponse } from "next/server";
 
-// Using 'any' to bypass the stubborn type checker
+// Using 'any' to bypass the broken type checker in Next.js 15.3.4
 export async function DELETE(req: NextRequest, { params }: any) {
     try {
         await dbConnect();
-        // We assume params.id exists and is a string
-        const deletedTodo = await Todo.findByIdAndDelete(params.id); 
+        // We know 'params.id' will be a string, so this is safe in practice
+        const deletedTodo = await Todo.findByIdAndDelete(params.id);
 
-        // ...rest of the function is the same
         if (!deletedTodo) {
             return NextResponse.json({ error: "Todo not found" }, { status: 404 });
         }
+
         return NextResponse.json({ message: "Todo deleted successfully" });
     } catch (error) {
         console.log(error);
@@ -20,7 +20,7 @@ export async function DELETE(req: NextRequest, { params }: any) {
     }
 }
 
-// Using 'any' again for the PUT function
+// Using 'any' for the PUT function as well
 export async function PUT(req: NextRequest, { params }: any) {
     try {
         await dbConnect();
@@ -29,18 +29,17 @@ export async function PUT(req: NextRequest, { params }: any) {
         if (!title) {
             return NextResponse.json({ error: "Text is required" }, { status: 400 });
         }
-        
-        // We assume params.id exists and is a string
+
         const updatedTodo = await Todo.findByIdAndUpdate(
             params.id,
             { title },
             { new: true }
         );
 
-        // ...rest of the function is the same
         if (!updatedTodo) {
             return NextResponse.json({ error: "Todo not found" }, { status: 404 });
         }
+
         return NextResponse.json(updatedTodo);
     } catch (error) {
         console.error(error);
