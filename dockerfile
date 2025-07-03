@@ -1,22 +1,13 @@
-# Use the official Node.js 18 image
-FROM node:18
-
-# Set working directory inside the container
+# 1. Install deps
+FROM node:18-alpine AS deps
 WORKDIR /app
-
-# Copy only package files first for better caching
 COPY package.json package-lock.json ./
-
-# Install dependencies
 RUN npm install
 
-
-# Copy the rest of the application code
+# 2. Copy code and build
 COPY . .
 RUN npm run build
 
-# Expose port 3000 (Next.js default)
+# 3. Run app
 EXPOSE 3000
-
-# Start the Next.js dev server
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
