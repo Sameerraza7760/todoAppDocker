@@ -1,7 +1,7 @@
 
-import { NextResponse, NextRequest } from "next/server";
-import Todo from "@/models/todo.models";
 import dbConnect from "@/lib/dbConnect";
+import Todo from "@/models/todo.models";
+import { NextResponse } from "next/server";
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
         await dbConnect();
