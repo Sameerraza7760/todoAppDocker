@@ -2,23 +2,15 @@ import dbConnect from "@/lib/dbConnect";
 import Todo from "@/models/todo.models";
 import { NextRequest, NextResponse } from "next/server";
 
-// This type definition is still good and correct
-type RouteContext = {
-    params: {
-        id: string;
-    };
-};
+// We are NOT defining a custom RouteContext type here.
 
-// CHANGE 1: The function signature now accepts a 'context' object
-export async function DELETE(req: NextRequest, context: RouteContext) {
-    // CHANGE 2: Destructure 'id' from context.params *inside* the function
-    const { id } = context.params;
-
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } } // <-- Using the standard inline type
+) {
     try {
         await dbConnect();
-
-        // CHANGE 3: Use the 'id' variable directly
-        const deletedTodo = await Todo.findByIdAndDelete(id);
+        const deletedTodo = await Todo.findByIdAndDelete(params.id);
 
         if (!deletedTodo) {
             return NextResponse.json({ error: "Todo not found" }, { status: 404 });
@@ -31,24 +23,20 @@ export async function DELETE(req: NextRequest, context: RouteContext) {
     }
 }
 
-// Apply the same changes to the PUT function
-export async function PUT(req: NextRequest, context: RouteContext) {
-    // Destructure 'id' from context.params inside the function
-    const { id } = context.params;
-
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } } // <-- Using the standard inline type again
+) {
     try {
         await dbConnect();
-
-        const body = await req.json();
-        const { title } = body;
+        const { title } = await req.json();
 
         if (!title) {
             return NextResponse.json({ error: "Text is required" }, { status: 400 });
         }
 
-        // Use the 'id' variable directly
         const updatedTodo = await Todo.findByIdAndUpdate(
-            id,
+            params.id,
             { title },
             { new: true }
         );
