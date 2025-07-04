@@ -14,3 +14,4 @@ export async function POST(req: Request) {
   const newTodo = await Todo.create({ title });
   return NextResponse.json(newTodo);
 }
+
