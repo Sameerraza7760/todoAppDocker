@@ -23,6 +23,7 @@ export async function DELETE(req: NextRequest, { params }: any) {
 
 // We add the same special comment here for the PUT function
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export async function PUT(req: NextRequest, { params }: any) {
     try {
         await dbConnect();
