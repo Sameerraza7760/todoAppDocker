@@ -1,4 +1,3 @@
-import Image from "next/image";
 import TodoApp from "./todo/page";
 
 export default function Home() {
@@ -6,6 +5,9 @@ export default function Home() {
     <>
     <h1>sameer</h1>
     <h1>uzairi</h1>
+    <h1>ahsan</h1>
+    <h1>usman</h1>
+    <h1>usman bukhtar</h1>
     <TodoApp/>
     </>
   );
