@@ -6,6 +6,9 @@ services:
     container_name: my-todo-app
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
     depends_on:
       - mongodb
     networks:
@@ -13,13 +16,8 @@ services:
     environment:
       - MONGODB_URI=${MONGODB_URI}
       - WATCHPACK_POLLING=true 
-    volumes:
-      - type: bind
-        source: .
-        target: /app
-        consistency: cached
-      - /app/node_modules
-
+    
+    
     env_file:
       - .env
 
